@@ -60,7 +60,7 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 		//whoami prints out the userName of the user
 		if (input.equals("whoami")) { System.out.println(userName); }
 		//if none of the above, then print error message stating unrecognized input
-		
+		System.out.println("Your input couldn't be recognized" );
 		return 0;
 	}
 	
@@ -68,6 +68,24 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 * cd Command to switch the current directory
 	 */
 	public void cd(String path) {
+		if(path == null || path.compareTo("") == 0)
+		{
+			this.current = this.home;
+			return;
+		}
+		else
+		{
+			for(int i = 0; i < this.directories.size(); i++)
+			{
+				if(path.compareTo(directories.get(i).filepath) == 0)
+				{
+					this.current = directories.get(i);
+				}
+			}
+			//searching for directory match
+		}
+		this.current = this.current;//do nothing if you don't find the directory// potentially would want an error message
+		return;
 		//if path is null switch to home
 		//otherwise, search directories for matching path
 	}
