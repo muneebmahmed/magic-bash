@@ -15,12 +15,10 @@ public class File implements Comparable<File> {	//implements comparable for sort
 	
 	public File(String name) {
 		this.name = name;
-		if(name.contains(".exe"))
-		{
+		if(name.contains(".exe") || name.contains(".bin")) {
 			setExecutable(true);
 		}
-		else
-		{
+		else {
 			setExecutable(false);
 		}
 		filepath = null;
