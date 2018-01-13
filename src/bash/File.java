@@ -6,6 +6,8 @@ public class File implements Comparable<File> {	//implements comparable for sort
 	
 	protected String filepath;		//absolute filepath, including file name
 	protected String name;			//just the name of the file, not including filepath
+	protected boolean executable;
+	protected String message;
 
 	public File() {
 		// TODO Auto-generated constructor stub
