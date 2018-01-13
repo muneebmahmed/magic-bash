@@ -3,7 +3,7 @@ package bash;
 import java.util.*;
 
 //Should directories and files both extend another class?
-public class Directory {
+public class Directory implements Comparable<Directory> {
 	
 	//these are protected so Bash and other directories can modify them
 	
@@ -24,25 +24,47 @@ public class Directory {
 		this();
 		this.name = name;
 		filepath = "~";
-		home = null;
+		home = this;
+		back = this;
 	}
 	
-	public void addDirectory(Directory d) {
+	public boolean addDirectory(Directory d) {
 		d.filepath = filepath + "/" + d.name;
+		for (Directory f : folders) {
+			if (f.name.equals(d.name)) {
+				return false;
+			}
+		}
 		folders.add(d);
 		d.back = this;
+		d.home = this.home;
+		Collections.sort(folders);
+		return true;
 	}
 	
-	public void addFile(File f) {
+	public boolean addFile(File f) {
+		for (File file : files) {
+			if (file.name.equals(f.name)) {
+				return false;
+			}
+		}
 		f.filepath = filepath + "/" + f.name;		//sets filepath
 		files.add(f);
+		Collections.sort(files);
+		return true;
 	}
 	
 	/*
 	 * This is the ls command. It prints all directories and files in directory
 	 */
 	public void ls() {
-		
+		System.out.println(".\n..");
+		for (Directory d : folders) {
+			System.out.println(d);
+		}
+		for (File f : files) {
+			System.out.println(f);
+		}
 	}
 	
 	/*
@@ -50,11 +72,12 @@ public class Directory {
 	 */
 	public void ls(String dirName) {
 		for (Directory d : folders) {
-			if (dirName.equals(d)) {
+			if (dirName.equals(d.name)) {
 				d.ls();
 				return;
 			}
 		}
+		System.out.println(dirName + " is not a directory");
 		//TODO print error message
 	}
 	
@@ -82,6 +105,17 @@ public class Directory {
 			}
 		}
 		//print error message
+	}
+
+	@Override
+	public int compareTo(Directory o) {
+		// TODO Auto-generated method stub
+		return name.compareTo(o.name);
+	}
+	
+	@Override
+	public String toString() {
+		return name;
 	}
 
 }

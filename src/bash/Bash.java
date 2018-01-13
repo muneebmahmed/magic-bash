@@ -38,7 +38,29 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	
 	//parses input
 	public int parse(String input) {
+		if (input.equals("")) { return 0; }
 		input = input.trim();
+		Directory curr = current;
+		int index = input.indexOf("../");
+		while (input.contains("../")) {
+			index = input.indexOf("../");
+			input = input.replaceFirst("../", "");
+			curr = curr.back;
+		}
+		if (index != -1) {
+			input = input.substring(0, index) + curr.filepath + "/" + input.substring(index);
+		}
+		index = input.indexOf("..");
+		curr = current;
+		while (input.contains("..")) {
+			index = input.indexOf("..");
+			input = input.substring(0, index) + input.substring(index + 2);
+			curr = curr.back;
+		}
+		if (index != -1) {
+			input = input.substring(0, index) + curr.filepath + input.substring(index);
+		}
+
 		//if just a filepath is passed in (e.g ~/folder/file) then that file is found and executed
 		//if this is a directory and not a file, then an error message is printed
 		//using .. is valid, so I'd suggest taking .. and replacing it with the filepath of the current directory's super directory
@@ -55,12 +77,10 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 		//help followed by a command name lists the usage of that command
 		if (input.contains("help") || input.contains("Help"))
 		{
-			if(input.compareTo("help") ==0 || input.compareTo("Help")==0)
-			{
+			if(input.compareTo("help") ==0 || input.compareTo("Help")==0) {
 				help();
 			}
-			else
-			{
+			else {
 				help(input.substring(input.indexOf("help")+4).trim());
 			}
 		}
@@ -77,13 +97,19 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 		{
 			System.out.println(userName); 
 		}
-		else if(input.substring(0, 2).equals("cd"))
-		{
+		else if (input.length() < 2) {
+			printError(input);
+			return 0;
+		}
+		else if(input.substring(0, 2).equals("cd")) {
 			cd(input.substring(input.indexOf("cd")+2).trim());
 		}
-		else if(input.substring(0, 2).equals("ls"))
-		{
+		else if(input.substring(0, 2).equals("ls")) {
 			ls(input.substring(input.indexOf("ls")+2).trim());
+		}
+		else if (input.length() < 5) {
+			printError(input);
+			return 0;
 		}
 		else if (input.substring(0, 5).equals("mkdir")){
 			mkdir(input.substring(5).trim());
@@ -92,8 +118,7 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 			touch(input.substring(5).trim());
 		}
 		//if none of the above, then print error message stating unrecognized input
-		else
-		{
+		else {
 			execute(input);
 		//System.out.println("Your input couldn't be recognized; try typing 'help'" );
 		}
@@ -117,7 +142,9 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 		Directory d = current.cd(path);		//this will print out error message if not found
 		if (d != null) {
 			current = d;
+			return;
 		}
+		System.out.println(path + " is not a directory");
 	}
 	
 	/*
@@ -125,6 +152,10 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 * this function should find the directory corresponding to the path, and call its ls function
 	 */
 	public void ls(String path) {
+		if (path.length() <= 1) {
+			current.ls();
+			return;
+		}
 		for (Directory d : directories) {
 			if (path.equals(d.filepath)) {
 				d.ls();
@@ -168,13 +199,21 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	
 	public void mkdir (String name) {
 		Directory d = new Directory(name);
-		current.addDirectory(d);
+		boolean added = current.addDirectory(d);
+		if (!added) { 
+			System.out.println("Directory already exists");
+			return;
+		}
 		directories.add(d);
 	}
 	
 	public void touch(String fileName) {
 		File f = new File(fileName);
-		current.addFile(f);
+		boolean added = current.addFile(f);
+		if (!added) {
+			System.out.println("File already exists");
+			return;
+		}
 		files.add(f);
 	}
 	
@@ -183,6 +222,10 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 */
 	public void printPrompt() {
 		System.out.print("Unix-Test:" + current.name + " " + userName + "$ ");
+	}
+	
+	public static void printError(String input) {
+		System.out.println(input + " - command not found");
 	}
 
 	@Override

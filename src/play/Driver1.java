@@ -28,9 +28,9 @@ public class Driver1 {
 		
 		bash.setHome(home);
 		bash.setCurrent(home);
+		bash.addDirectory(home);
 		//now add directories to bash, in alphabetical order
 		
-		MiniGame mg = new MiniGame(new HelloWorld());
 		Thread t1 = new Thread(bash);
 		t1.start();
 		try {

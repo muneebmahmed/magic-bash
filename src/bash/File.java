@@ -57,5 +57,10 @@ public class File implements Comparable<File> {	//implements comparable for sort
 	public void setExecutable(boolean executable) {
 		this.executable = executable;
 	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 
 }
