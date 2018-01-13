@@ -18,6 +18,7 @@ public class File implements Comparable<File> {	//implements comparable for sort
 	
 	/*
 	 * Executes this file and launches the appropriate mini game
+	 * Perhaps this function should check the name of the file, and then create a new instance of the appropriate class?
 	 */
 	public void execute() {
 		

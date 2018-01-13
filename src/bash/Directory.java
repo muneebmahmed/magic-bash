@@ -16,9 +16,12 @@ public class Directory {
 
 	public Directory() {
 		// TODO Auto-generated constructor stub
+		folders = new ArrayList<Directory>();
+		files = new ArrayList<File>();
 	}
 	
 	public Directory(String name) {
+		this();
 		this.name = name;
 		filepath = "~";
 		home = null;
@@ -40,6 +43,19 @@ public class Directory {
 	 */
 	public void ls() {
 		
+	}
+	
+	/*
+	 * Used when the shell is passed in the name of a folder in this directory instead of the path
+	 */
+	public void ls(String dirName) {
+		for (Directory d : folders) {
+			if (dirName.equals(d)) {
+				d.ls();
+				return;
+			}
+		}
+		//TODO print error message
 	}
 	
 	/*

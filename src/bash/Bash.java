@@ -1,19 +1,26 @@
 package bash;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
-public class Bash {		//should this class implement Runnable?
+public class Bash implements Runnable {		//should this class implement Runnable?
 	
 	private Directory current;	//this is the current directory
 	private Directory home;		//contains link to home directory
 	private ArrayList<Directory> directories;	//should this class have a list of all directories?
 	private ArrayList<File> files;	//list of all the files
 	private int helpCount;		//counter for the level the help list is currently at
+	private String userName;
 
 	public Bash() {
 		directories = new ArrayList<Directory>();
 		files = new ArrayList<File>();
 		helpCount = 0;
+		userName = "root";
+	}
+	
+	public void setName(String name) {
+		userName = name;
 	}
 	
 	public void setHome(Directory home) {
@@ -30,7 +37,7 @@ public class Bash {		//should this class implement Runnable?
 	}
 	
 	//parses input
-	public void parse(String input) {
+	public int parse(String input) {
 		//if just a filepath is passed in (e.g ~/folder/file) then that file is found and executed
 		//if this is a directory and not a file, then an error message is printed
 		//using .. is valid, so I'd suggest taking .. and replacing it with the filepath of the current directory's super directory
@@ -46,9 +53,15 @@ public class Bash {		//should this class implement Runnable?
 		//help brings up help list
 		//help followed by a command name lists the usage of that command
 		
-		//quit/exit quits the game
-		
+		//quit/exit quits the game. In this case, return 1
+		if (input.equals("quit") || input.equals("exit") || input.equals("logout")) { return 1; }
 		//pwd prints out the filepath of the current directory
+		if (input.equals("pwd")) { System.out.println(current.filepath); }
+		//whoami prints out the userName of the user
+		if (input.equals("whoami")) { System.out.println(userName); }
+		//if none of the above, then print error message stating unrecognized input
+		
+		return 0;
 	}
 	
 	/*
@@ -64,7 +77,13 @@ public class Bash {		//should this class implement Runnable?
 	 * this function should find the directory corresponding to the path, and call its ls function
 	 */
 	public void ls(String path) {
-		
+		for (Directory d : directories) {
+			if (path.equals(d.filepath)) {
+				d.ls();
+				return;
+			}
+		}
+		current.ls(path);
 	}
 	
 	/*
@@ -73,6 +92,46 @@ public class Bash {		//should this class implement Runnable?
 	 */
 	public void execute(String path) {
 		
+	}
+	
+	/*
+	 * prints help list
+	 * should print possible commands as well as any other relevant information
+	 */
+	public void help() {
+		//check helpCount to see how much should be printed
+	}
+	
+	/*
+	 * prints usage info for a specific command
+	 * should print an error if not passed the name of a command
+	 */
+	public void help(String command) {
+		
+	}
+	
+	/*
+	 * Prints the prompt, call it after each command is executed
+	 */
+	public void printPrompt() {
+		System.out.print("Unix-Test:" + current.name + " " + userName + "$ ");
+	}
+
+	@Override
+	public void run() {
+		String input;
+		Scanner scanner = new Scanner(System.in);
+		int result;
+		//print welcome message here
+		printPrompt();
+		while (true) {
+			input = scanner.nextLine();
+			result = parse(input);
+			if (result == 1) { break; }		//this is when 'quit' or 'exit' is entered
+			printPrompt();
+		}
+		//print logout message
+		scanner.close();
 	}
 
 }
