@@ -89,12 +89,13 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 			mkdir(input.substring(5).trim());
 		}
 		else if (input.substring(0, 5).equals("touch")) {
-			
+			touch(input.substring(5).trim());
 		}
 		//if none of the above, then print error message stating unrecognized input
 		else
 		{
-		System.out.println("Your input couldn't be recognized; try typing 'help'" );
+			execute(input);
+		//System.out.println("Your input couldn't be recognized; try typing 'help'" );
 		}
 		return 0;
 	}
@@ -140,10 +141,12 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	public void execute(String path) {
 		for(File f: files){
 			if(f.filepath.equals(path)){
+				System.out.println("Executing");
 				f.execute();
 				return;
 			}
 		}
+		current.execute(path);
 	}
 	
 	/*

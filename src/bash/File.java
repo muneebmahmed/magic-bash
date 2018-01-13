@@ -1,13 +1,15 @@
 package bash;
 
 import java.util.*;
+import gui.*;
 
 public class File implements Comparable<File> {	//implements comparable for sorting
 	
 	protected String filepath;		//absolute filepath, including file name
 	protected String name;			//just the name of the file, not including filepath
-	private boolean executable; //says if the file is .exe
+	protected boolean executable; //says if the file is .exe
 	private String message;
+	MiniGame mg;					//the game to launch (if executable)
 
 	public File() {
 		// TODO Auto-generated constructor stub
@@ -15,11 +17,9 @@ public class File implements Comparable<File> {	//implements comparable for sort
 	
 	public File(String name) {
 		this.name = name;
+		executable = false;
 		if(name.contains(".exe") || name.contains(".bin")) {
-			setExecutable(true);
-		}
-		else {
-			setExecutable(false);
+			executable = true;
 		}
 		filepath = null;
 		message = "Created  at " + java.lang.System.currentTimeMillis();
@@ -30,7 +30,11 @@ public class File implements Comparable<File> {	//implements comparable for sort
 	 * Perhaps this function should check the name of the file, and then create a new instance of the appropriate class?
 	 */
 	public void execute() {
-		
+		if (name.equals("helloworld.bin")) {
+			mg = new MiniGame(new HelloWorld());
+			return;
+		}
+		//print error message
 	}
 	
 	@Override

@@ -76,7 +76,12 @@ public class Directory {
 	 * I don't think this one is necessary since files should be executed by typing ./file1, not just file1
 	 */
 	public void execute(String filename) {
-		
+		for (File f : files) {
+			if (filename.equals(f.name) && f.executable) {
+				f.execute();
+			}
+		}
+		//print error message
 	}
 
 }
