@@ -77,13 +77,19 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 		{
 			System.out.println(userName); 
 		}
-		else if(input.contains("cd"))
+		else if(input.substring(0, 2).equals("cd"))
 		{
 			cd(input.substring(input.indexOf("cd")+2).trim());
 		}
-		else if(input.contains("ls"))
+		else if(input.substring(0, 2).equals("ls"))
 		{
 			ls(input.substring(input.indexOf("ls")+2).trim());
+		}
+		else if (input.substring(0, 5).equals("mkdir")){
+			mkdir(input.substring(5).trim());
+		}
+		else if (input.substring(0, 5).equals("touch")) {
+			
 		}
 		//if none of the above, then print error message stating unrecognized input
 		else
@@ -97,34 +103,19 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 * cd Command to switch the current directory
 	 */
 	public void cd(String path) {
-		if(path == null || path.compareTo("") == 0)
-		{
+		if(path == null || path.compareTo("") == 0) {
 			this.current = this.home;
 			return;
 		}
-		else
-		{
-			for(int i = 0; i < this.directories.size(); i++)
-			{
-				if(path.compareTo(directories.get(i).filepath) == 0)
-				{
-					this.current = directories.get(i);
-				}
+		for (Directory d : directories) {
+			if (path.equals(d.filepath)) {
+				current = d;
+				return;
 			}
-			//searching for directory match
 		}
-		this.current = this.current;//do nothing if you don't find the directory// potentially would want an error message
-		return;
-		//if path is null switch to home
-		//otherwise, search directories for matching path
-		if(path == null){
-			current = home;
-			return;
-		}
-		for(Directory d:directories){
-				if(d.filepath.compareTo(path) == 0){
-					current = d;
-			}
+		Directory d = current.cd(path);		//this will print out error message if not found
+		if (d != null) {
+			current = d;
 		}
 	}
 	
@@ -139,7 +130,7 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 				return;
 			}
 		}
-		current.ls(path);
+		current.ls(path);		//this will print out error message
 	}
 	
 	/*
@@ -170,6 +161,18 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 */
 	public void help(String command) {
 		//not really sure the proper function of all the commands so someone else should write this function
+	}
+	
+	public void mkdir (String name) {
+		Directory d = new Directory(name);
+		current.addDirectory(d);
+		directories.add(d);
+	}
+	
+	public void touch(String fileName) {
+		File f = new File(fileName);
+		current.addFile(f);
+		files.add(f);
 	}
 	
 	/*
