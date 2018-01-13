@@ -65,13 +65,31 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 			}
 		}
 		//quit/exit quits the game. In this case, return 1
-		if (input.equals("quit") || input.equals("exit") || input.equals("logout")) { return 1; }
+		else if (input.equals("quit") || input.equals("exit") || input.equals("logout")) { 
+			return 1; 
+		}
 		//pwd prints out the filepath of the current directory
-		if (input.equals("pwd")) { System.out.println(current.filepath); }
+		else if (input.equals("pwd")) { 
+			System.out.println(current.filepath); 
+		}
 		//whoami prints out the userName of the user
-		if (input.equals("whoami")) { System.out.println(userName); }
+		else if (input.equals("whoami")) 
+		{
+			System.out.println(userName); 
+		}
+		else if(input.contains("cd"))
+		{
+			cd(input.substring(input.indexOf("cd")+2).trim());
+		}
+		else if(input.contains("ls"))
+		{
+			ls(input.substring(input.indexOf("ls")+2).trim());
+		}
 		//if none of the above, then print error message stating unrecognized input
-		System.out.println("Your input couldn't be recognized" );
+		else
+		{
+		System.out.println("Your input couldn't be recognized; try typing 'help'" );
+		}
 		return 0;
 	}
 	
@@ -129,6 +147,7 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 */
 	public void help() {
 		//check helpCount to see how much should be printed
+		//not really sure the proper function of all the commands so someone else should write this function
 	}
 	
 	/*
@@ -136,7 +155,7 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 * should print an error if not passed the name of a command
 	 */
 	public void help(String command) {
-		
+		//not really sure the proper function of all the commands so someone else should write this function
 	}
 	
 	/*
