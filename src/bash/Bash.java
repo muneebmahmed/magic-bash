@@ -38,6 +38,7 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	
 	//parses input
 	public int parse(String input) {
+		input = input.trim();
 		//if just a filepath is passed in (e.g ~/folder/file) then that file is found and executed
 		//if this is a directory and not a file, then an error message is printed
 		//using .. is valid, so I'd suggest taking .. and replacing it with the filepath of the current directory's super directory
@@ -52,7 +53,17 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 		
 		//help brings up help list
 		//help followed by a command name lists the usage of that command
-		
+		if (input.contains("help") || input.contains("Help"))
+		{
+			if(input.compareTo("help") ==0 || input.compareTo("Help")==0)
+			{
+				help();
+			}
+			else
+			{
+				help(input.substring(input.indexOf("help")+4).trim());
+			}
+		}
 		//quit/exit quits the game. In this case, return 1
 		if (input.equals("quit") || input.equals("exit") || input.equals("logout")) { return 1; }
 		//pwd prints out the filepath of the current directory
@@ -139,10 +150,10 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	public void run() {
 		String input;
 		Scanner scanner = new Scanner(System.in);
-		int result;
+		int result = 0;
 		//print welcome message here
 		printPrompt();
-		while (true) {
+		while (result != 1) {
 			input = scanner.nextLine();
 			result = parse(input);
 			if (result == 1) { break; }		//this is when 'quit' or 'exit' is entered
