@@ -38,7 +38,8 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	
 	//parses input
 	public int parse(String input) {
-		//if just a filepath is passed in (e.g ~/folder/file) then that file is found and executed (if file is executable)
+		input = input.trim();
+		//if just a filepath is passed in (e.g ~/folder/file) then that file is found and executed
 		//if this is a directory and not a file, then an error message is printed
 		//using .. is valid, so I'd suggest taking .. and replacing it with the filepath of the current directory's super directory
 		//same for . which refers to the current directory
@@ -46,24 +47,49 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 			//executed by typing ~/folder/file1, or by just typing ./file1
 		//typing open followed by a filepath should do this same thing, but only if time permits
 		
-		//cat followed by a filename or path of a text file will print the contents of the file
-		//if file is not text file, then error message is given
-		
 		//if cd with an absolute filepath (e.g. cd ~/folder) is passed in that cd to that directory
 		//if just cd then cd to home
 		//if cd with a relative filepath (e.g. cd folder) is passed then the current directory's cd command is called
 		
 		//help brings up help list
 		//help followed by a command name lists the usage of that command
-		
+		if (input.contains("help") || input.contains("Help"))
+		{
+			if(input.compareTo("help") ==0 || input.compareTo("Help")==0)
+			{
+				help();
+			}
+			else
+			{
+				help(input.substring(input.indexOf("help")+4).trim());
+			}
+		}
 		//quit/exit quits the game. In this case, return 1
-		if (input.equals("quit") || input.equals("exit") || input.equals("logout")) { return 1; }
+		else if (input.equals("quit") || input.equals("exit") || input.equals("logout")) { 
+			return 1; 
+		}
 		//pwd prints out the filepath of the current directory
-		if (input.equals("pwd")) { System.out.println(current.filepath); }
+		else if (input.equals("pwd")) { 
+			System.out.println(current.filepath); 
+		}
 		//whoami prints out the userName of the user
-		if (input.equals("whoami")) { System.out.println(userName); }
+		else if (input.equals("whoami")) 
+		{
+			System.out.println(userName); 
+		}
+		else if(input.contains("cd"))
+		{
+			cd(input.substring(input.indexOf("cd")+2).trim());
+		}
+		else if(input.contains("ls"))
+		{
+			ls(input.substring(input.indexOf("ls")+2).trim());
+		}
 		//if none of the above, then print error message stating unrecognized input
-		
+		else
+		{
+		System.out.println("Your input couldn't be recognized; try typing 'help'" );
+		}
 		return 0;
 	}
 	
@@ -71,6 +97,24 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 * cd Command to switch the current directory
 	 */
 	public void cd(String path) {
+		if(path == null || path.compareTo("") == 0)
+		{
+			this.current = this.home;
+			return;
+		}
+		else
+		{
+			for(int i = 0; i < this.directories.size(); i++)
+			{
+				if(path.compareTo(directories.get(i).filepath) == 0)
+				{
+					this.current = directories.get(i);
+				}
+			}
+			//searching for directory match
+		}
+		this.current = this.current;//do nothing if you don't find the directory// potentially would want an error message
+		return;
 		//if path is null switch to home
 		//otherwise, search directories for matching path
 	}
@@ -103,6 +147,7 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 */
 	public void help() {
 		//check helpCount to see how much should be printed
+		//not really sure the proper function of all the commands so someone else should write this function
 	}
 	
 	/*
@@ -110,7 +155,7 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 * should print an error if not passed the name of a command
 	 */
 	public void help(String command) {
-		
+		//not really sure the proper function of all the commands so someone else should write this function
 	}
 	
 	/*
@@ -124,10 +169,10 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	public void run() {
 		String input;
 		Scanner scanner = new Scanner(System.in);
-		int result;
+		int result = 0;
 		//print welcome message here
 		printPrompt();
-		while (true) {
+		while (result != 1) {
 			input = scanner.nextLine();
 			result = parse(input);
 			if (result == 1) { break; }		//this is when 'quit' or 'exit' is entered
