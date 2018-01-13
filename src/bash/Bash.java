@@ -38,13 +38,16 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	
 	//parses input
 	public int parse(String input) {
-		//if just a filepath is passed in (e.g ~/folder/file) then that file is found and executed
+		//if just a filepath is passed in (e.g ~/folder/file) then that file is found and executed (if file is executable)
 		//if this is a directory and not a file, then an error message is printed
 		//using .. is valid, so I'd suggest taking .. and replacing it with the filepath of the current directory's super directory
 		//same for . which refers to the current directory
 		//e.g. if file1 is located in ~/folder, and the current directory is folder, it should be able to be
 			//executed by typing ~/folder/file1, or by just typing ./file1
 		//typing open followed by a filepath should do this same thing, but only if time permits
+		
+		//cat followed by a filename or path of a text file will print the contents of the file
+		//if file is not text file, then error message is given
 		
 		//if cd with an absolute filepath (e.g. cd ~/folder) is passed in that cd to that directory
 		//if just cd then cd to home
