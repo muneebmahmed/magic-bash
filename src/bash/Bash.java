@@ -70,6 +70,15 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	public void cd(String path) {
 		//if path is null switch to home
 		//otherwise, search directories for matching path
+		if(path == null){
+			current = home;
+			return;
+		}
+		for(Directory d:directories){
+				if(d.filepath.compareTo(path) == 0){
+					current = d;
+			}
+		}
 	}
 	
 	/*
@@ -91,7 +100,12 @@ public class Bash implements Runnable {		//should this class implement Runnable?
 	 * The file is found from the list of files, 
 	 */
 	public void execute(String path) {
-		
+		for(File f: files){
+			if(f.filepath.equals(path)){
+				f.execute();
+				return;
+			}
+		}
 	}
 	
 	/*
